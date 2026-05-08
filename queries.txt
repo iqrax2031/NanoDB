@@ -1,0 +1,54 @@
+-- Placeholder queries for NanoDB test runner
+
+-- 50-query workload for NanoDB demo
+-- 1-5: simple inserts
+INSERT INTO customer VALUES (20001, "NewCust1", "NewAddr1", 5, 1234.50, "BUILDING", "new");
+INSERT INTO customer VALUES (20002, "NewCust2", "NewAddr2", 6, 2500.00, "AUTOMOBILE", "new");
+INSERT INTO customer VALUES (20003, "NewCust3", "NewAddr3", 7, 7500.25, "BUILDING", "new");
+INSERT INTO customer VALUES (20004, "NewCust4", "NewAddr4", 8, 50.00, "HOUSEHOLD", "new");
+INSERT INTO customer VALUES (20005, "NewCust5", "NewAddr5", 9, 9999.99, "FURNITURE", "new");
+
+-- 6-15: simple selects and parser evaluation
+SELECT WHERE c_acctbal > 5000 AND c_mktsegment == "BUILDING";
+SELECT WHERE c_acctbal > 10000;
+SELECT WHERE c_mktsegment == "AUTOMOBILE";
+SELECT WHERE c_nationkey == 15;
+SELECT WHERE c_acctbal > 5000 OR c_nationkey == 3;
+
+-- 16-22: index optimizer test (sequential then index)
+SELECT customer WHERE c_custkey = 10
+SELECT customer WHERE c_custkey = 5000
+SELECT customer WHERE c_custkey = 15000
+SELECT customer WHERE c_custkey = 20000
+SELECT customer WHERE c_custkey = 1
+
+-- 23-32: joins and optimizer
+SELECT customer.c_custkey, orders.o_orderkey FROM customer JOIN orders ON customer.c_custkey = orders.o_custkey;
+SELECT * FROM orders JOIN lineitem ON orders.o_orderkey = lineitem.l_orderkey;
+SELECT * FROM customer JOIN orders JOIN lineitem ON customer.c_custkey = orders.o_custkey AND orders.o_orderkey = lineitem.l_orderkey;
+SELECT WHERE c_acctbal > 5000 AND c_mktsegment == "BUILDING"; -- parser test
+SELECT WHERE c_acctbal > 0; -- broad scan
+SELECT customer.c_custkey FROM customer WHERE c_mktsegment == "HOUSEHOLD";
+
+-- 33-38: updates and deep expression tests
+UPDATE customer SET c_acctbal = c_acctbal + 100 WHERE c_custkey = 2;
+SELECT WHERE (o_totalprice * 1.5) > 100000 AND (o_custkey % 2 == 0) OR (o_orderstatus != "O");
+SELECT WHERE ((c_acctbal > 1000 AND c_nationkey == 5) OR (c_mktsegment == "FURNITURE"));
+SELECT WHERE ( (o_totalprice * 1.5) > 100000 AND (o_custkey % 2 == 0) ) OR (o_orderstatus != "O");
+SELECT WHERE c_acctbal > 9999; -- edge
+
+-- 39-44: stress / concurrency simulation (background queries)
+SELECT WHERE c_acctbal < 100;
+SELECT WHERE c_acctbal BETWEEN 50 AND 500;
+SELECT WHERE c_mktsegment == "BUILDING";
+SELECT WHERE c_mktsegment == "AUTOMOBILE";
+SELECT WHERE c_mktsegment == "FURNITURE";
+SELECT WHERE c_mktsegment == "HOUSEHOLD";
+
+-- 45-50: durability & persistence tests
+INSERT INTO customer VALUES (20006, "Persist1", "PAddr1", 10, 111.11, "BUILDING", "persist");
+INSERT INTO customer VALUES (20007, "Persist2", "PAddr2", 11, 222.22, "AUTOMOBILE", "persist");
+INSERT INTO customer VALUES (20008, "Persist3", "PAddr3", 12, 333.33, "HOUSEHOLD", "persist");
+INSERT INTO customer VALUES (20009, "Persist4", "PAddr4", 13, 444.44, "FURNITURE", "persist");
+INSERT INTO customer VALUES (20010, "Persist5", "PAddr5", 14, 555.55, "BUILDING", "persist");
+

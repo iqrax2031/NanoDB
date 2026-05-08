@@ -1,0 +1,59 @@
+# Build artifacts
+/build/
+/bin/
+*.o
+*.a
+*.lib
+*.exe
+*.dll
+*.so
+*.dylib
+*.obj
+*.pdb
+*.ilk
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.cbp
+*.layout
+
+# Data and logs
+/datasets/pages/
+page_*.dat
+*.log
+nanodb_execution.log
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+
+# OS files
+.DS_Store
+Thumbs.db
+.Thumbs.db
+$RECYCLE.BIN/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Archives and datasets (but keep queries.txt)
+*.zip
+/datasets/pages/
+!queries.txt
+
+# User-specific files
+*.user
+*.creator
