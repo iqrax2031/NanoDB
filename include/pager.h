@@ -14,11 +14,14 @@ public:
     void flush_all();
 
     size_t page_size() const { return page_size_; }
+    int get_eviction_count() const { return eviction_count_; }
+    void reset_eviction_count() { eviction_count_ = 0; }
 
 private:
     size_t page_size_;
     size_t pool_size_;
     std::string store_path_;
+    int eviction_count_;
 
     char* buffer_; // contiguous pages: buffer_ + frame * page_size_
 

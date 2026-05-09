@@ -12,7 +12,7 @@ static bool dir_exists(const std::string &p) {
 }
 
 Pager::Pager(size_t page_size, size_t pool_size, const std::string &store_path)
-    : page_size_(page_size), pool_size_(pool_size), store_path_(store_path) {
+    : page_size_(page_size), pool_size_(pool_size), store_path_(store_path), eviction_count_(0) {
     buffer_ = new char[page_size_ * pool_size_];
     page_ids_ = new int[pool_size_];
     dirty_ = new bool[pool_size_];
@@ -128,6 +128,7 @@ int Pager::evict_lru() {
     if (tail_ == -1) head_ = -1;
     prev_[victim] = next_[victim] = -1;
     ++free_count_;
+    ++eviction_count_;
     return victim;
 }
 
