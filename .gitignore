@@ -57,3 +57,9 @@ __pycache__/
 # User-specific files
 *.user
 *.creator
+
+# Exclude certain documentation files
+NanoDB - Project (1).md
+DESIGN.md
+IMPLEMENTATION.md
+COMPLETION_CHECKLIST.md
