@@ -1,9 +1,12 @@
 #pragma once
+// NanoDB Query Parser
+// Tokenizes infix expressions and converts them to postfix via Shunting Yard.
 
 #include "type.h"
 #include "stack.h"
 #include <string>
 #include <cstring>
+#include <cctype>
 
 namespace nanodb {
 
@@ -97,7 +100,20 @@ public:
                 char id[256];
                 strncpy_s(id, sizeof(id), expr + start, len_id);
                 id[len_id] = '\0';
-                tokens[token_count++] = Token(TokenType::IDENTIFIER, id);
+
+                char upper_id[256];
+                for (int k = 0; k <= len_id; ++k) {
+                    upper_id[k] = (char)std::toupper((unsigned char)id[k]);
+                }
+
+                if (strcmp(upper_id, "AND") == 0) {
+                    // Treat SQL-style boolean keywords as operators, not identifiers.
+                    tokens[token_count++] = Token(TokenType::LOGICAL_AND, "AND");
+                } else if (strcmp(upper_id, "OR") == 0) {
+                    tokens[token_count++] = Token(TokenType::LOGICAL_OR, "OR");
+                } else {
+                    tokens[token_count++] = Token(TokenType::IDENTIFIER, id);
+                }
                 continue;
             }
             
@@ -207,6 +223,7 @@ public:
             }
             
             // Operators: pop higher precedence operators
+                 // Left-associative operators are emitted while stack precedence is >= current.
             int prec = get_precedence(token.type);
             while (!op_stack.empty() && 
                    op_stack.top().type != TokenType::LEFT_PAREN &&

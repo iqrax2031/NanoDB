@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Expression Evaluator
+// Evaluates postfix expressions for WHERE clause arithmetic and boolean logic.
 
 #include "type.h"
 #include "stack.h"
@@ -11,6 +13,15 @@ namespace nanodb {
 // Expression evaluator: evaluates postfix expressions
 class ExpressionEvaluator {
 public:
+    // Normalize scalar values to SQL-like truthiness for boolean operators.
+    static bool field_truthy(const Field& f) {
+        if (!f.val) return false;
+        if (const IntValue* iv = dynamic_cast<const IntValue*>(f.val)) return iv->v != 0;
+        if (const FloatValue* fv = dynamic_cast<const FloatValue*>(f.val)) return fv->v != 0.0;
+        if (const StringValue* sv = dynamic_cast<const StringValue*>(f.val)) return !sv->v.empty();
+        return false;
+    }
+
     // Evaluate a postfix expression (for WHERE clauses)
     // context: optional context for variable lookups (not used in demo)
     static bool evaluate_boolean(const Token* postfix, int postfix_count) {
@@ -57,6 +68,7 @@ public:
                 Field b = stack.pop();
                 Field a = stack.pop();
                 
+                // Push result back so nested expressions fold naturally.
                 Field result = apply_operator(a, b, token.type);
                 stack.push(result);
             }
@@ -169,13 +181,13 @@ public:
                 return Field(new IntValue(0));
                 
             case TokenType::LOGICAL_AND:
-                if ((a.val && a.compare(b) != 0) && (b.val && a.compare(b) != 0)) {
+                if (field_truthy(a) && field_truthy(b)) {
                     return Field(new IntValue(1));
                 }
                 return Field(new IntValue(0));
                 
             case TokenType::LOGICAL_OR:
-                if (a.val || b.val) return Field(new IntValue(1));
+                if (field_truthy(a) || field_truthy(b)) return Field(new IntValue(1));
                 return Field(new IntValue(0));
                 
             default:

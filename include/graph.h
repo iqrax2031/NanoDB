@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Graph Optimizer Model
+// Represents join-cost graphs and provides MST-based join-order optimization.
 
 namespace nanodb {
 

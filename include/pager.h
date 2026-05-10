@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Pager
+// Buffer pool and disk page manager with LRU eviction and dirty-page flushing.
 
 #include <string>
 

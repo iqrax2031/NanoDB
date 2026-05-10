@@ -1,4 +1,5 @@
 #!/bin/bash
+# build.sh: POSIX build entry for NanoDB on Linux/macOS/WSL
 # =====================================================================
 # NanoDB Build Script for Linux/macOS/WSL
 # =====================================================================

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""run_demo.py: Python helper that simulates NanoDB demo output and writes log entries."""
 """
 NanoDB Test Runner Simulation
 Demonstrates all 7 test cases and generates nanodb_execution.log
@@ -105,7 +106,7 @@ def main():
     write_log("Queue populated: 50 background + 1 admin query")
     write_log("ADMIN query (priority 0) executed FIRST (preempted background queries)")
     
-    print("✓ Admin query preempted background queries (priority 0 executed first)")
+    print("[OK] Admin query preempted background queries (priority 0 executed first)")
     print()
     
     # TEST CASE F: Deep Expression Tree
@@ -119,7 +120,7 @@ def main():
     
     print("Expression parsed successfully")
     print("Postfix: 1000 1.5 * 100000 > 10 2 % 0 == AND 1 0 != OR")
-    print("✓ Complex nesting and operator precedence handled correctly")
+    print("[OK] Complex nesting and operator precedence handled correctly")
     print()
     
     # TEST CASE G: Durability & Persistence
@@ -139,13 +140,13 @@ def main():
     print("=" * 70)
     print("TEST SUITE COMPLETE")
     print("=" * 70)
-    print("✓ Test Case A: Parser & Evaluator")
-    print("✓ Test Case B: Index Optimizer (Sequential vs AVL)")
-    print("✓ Test Case C: Join Optimizer (MST Path)")
-    print("✓ Test Case D: Memory Stress (LRU Eviction)")
-    print("✓ Test Case E: Priority Queue (Admin Preemption)")
-    print("✓ Test Case F: Deep Expression Trees")
-    print("✓ Test Case G: Durability & Persistence")
+    print("[OK] Test Case A: Parser & Evaluator")
+    print("[OK] Test Case B: Index Optimizer (Sequential vs AVL)")
+    print("[OK] Test Case C: Join Optimizer (MST Path)")
+    print("[OK] Test Case D: Memory Stress (LRU Eviction)")
+    print("[OK] Test Case E: Priority Queue (Admin Preemption)")
+    print("[OK] Test Case F: Deep Expression Trees")
+    print("[OK] Test Case G: Durability & Persistence")
     print()
     print("Detailed logs: nanodb_execution.log")
     print("=" * 70)

@@ -1,3 +1,5 @@
+// NanoDB Smoke Test Entry
+// Runs quick subsystem checks for manual validation and development sanity.
 #include <iostream>
 #include <iomanip>
 #include "../include/pager.h"
@@ -31,19 +33,19 @@ int main() {
     print_header("TEST 1: Buffer Pool (Pager) with LRU Cache");
     {
         Pager pager(4096, 8, "datasets/pages");
-        std::cout << "✓ Pager initialized: 8 pages of 4096 bytes\n";
+        std::cout << "[OK] Pager initialized: 8 pages of 4096 bytes\n";
         
         // Write to multiple pages
         for (int i = 0; i < 5; ++i) {
             char* page = pager.fetch_page(i);
             sprintf_s(page, 50, "Page %d content", i);
             pager.mark_dirty(i);
-            std::cout << "✓ Wrote to page " << i << std::endl;
+            std::cout << "[OK] Wrote to page " << i << std::endl;
         }
         
         // Read back
         char* page = pager.fetch_page(0);
-        std::cout << "✓ Read from page 0: " << page << std::endl;
+        std::cout << "[OK] Read from page 0: " << page << std::endl;
         
         pager.flush_all();
         std::cout << "✓ All pages flushed to disk\n";

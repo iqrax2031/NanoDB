@@ -1,4 +1,11 @@
 #pragma once
+// NanoDB Row/Table Model
+// Owns row storage and table-level insertion/resizing for in-memory records.
+
+#include <cstring>
+#include <string>
+#include <sstream>
+#include <iostream>
 
 #include "type.h"
 
@@ -87,12 +94,14 @@ private:
 public:
     Table(const char* name = "table", int capacity = 1024) 
         : row_count_(0), capacity_(capacity) {
-        strncpy_s(table_name_, sizeof(table_name_), name, sizeof(table_name_) - 1);
+        strncpy(table_name_, name, sizeof(table_name_) - 1);
+        table_name_[sizeof(table_name_) - 1] = '\0';
         rows_ = new Row[capacity_];
     }
     
     Table(const Table& other) : row_count_(other.row_count_), capacity_(other.capacity_) {
-        strncpy_s(table_name_, sizeof(table_name_), other.table_name_, sizeof(table_name_) - 1);
+        strncpy(table_name_, other.table_name_, sizeof(table_name_) - 1);
+        table_name_[sizeof(table_name_) - 1] = '\0';
         rows_ = new Row[capacity_];
         for (int i = 0; i < row_count_; ++i) {
             rows_[i] = other.rows_[i];
@@ -102,7 +111,8 @@ public:
     Table& operator=(const Table& other) {
         if (this != &other) {
             delete[] rows_;
-            strncpy_s(table_name_, sizeof(table_name_), other.table_name_, sizeof(table_name_) - 1);
+            strncpy(table_name_, other.table_name_, sizeof(table_name_) - 1);
+            table_name_[sizeof(table_name_) - 1] = '\0';
             row_count_ = other.row_count_;
             capacity_ = other.capacity_;
             rows_ = new Row[capacity_];

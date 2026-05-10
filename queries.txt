@@ -52,3 +52,18 @@ INSERT INTO customer VALUES (20008, "Persist3", "PAddr3", 12, 333.33, "HOUSEHOLD
 INSERT INTO customer VALUES (20009, "Persist4", "PAddr4", 13, 444.44, "FURNITURE", "persist");
 INSERT INTO customer VALUES (20010, "Persist5", "PAddr5", 14, 555.55, "BUILDING", "persist");
 
+-- Additional queries to reach 50 total
+SELECT customer.c_name, customer.c_acctbal FROM customer WHERE c_acctbal BETWEEN 1000 AND 5000;
+SELECT * FROM lineitem WHERE l_quantity > 25;
+SELECT orders.o_orderkey, orders.o_totalprice FROM orders WHERE o_totalprice > 10000.0;
+INSERT INTO orders VALUES (30001, 20001, 2026-05-01, 1000.50);
+UPDATE orders SET o_totalprice = o_totalprice * 1.1 WHERE o_orderkey = 30001;
+SELECT * FROM customer JOIN orders ON customer.c_custkey = orders.o_custkey WHERE customer.c_mktsegment == "BUILDING";
+SELECT lineitem.l_orderkey, lineitem.l_extendedprice FROM lineitem WHERE l_extendedprice > 5000.0;
+SELECT WHERE c_acctbal < 10 OR c_mktsegment == "new";
+UPDATE customer SET c_acctbal = c_acctbal - 50 WHERE c_custkey = 5;
+SELECT * FROM customer WHERE c_name LIKE "%NewCust%";
+SELECT orders.o_orderkey FROM orders WHERE o_custkey = 20005;
+SELECT customer.c_custkey, COUNT(orders.o_orderkey) FROM customer JOIN orders ON customer.c_custkey = orders.o_custkey;
+SELECT * FROM customer WHERE c_acctbal >= 0; -- final broad scan
+

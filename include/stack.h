@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Stack
+// Dynamic array-backed LIFO stack used by parser and evaluator internals.
 
 namespace nanodb {
 

@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Hash Map
+// Custom hash table for fast metadata and catalog lookups.
 
 #include "dlinked_list.h"
 

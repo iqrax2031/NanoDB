@@ -1,4 +1,5 @@
 @echo off
+REM build.bat: Windows MSVC build entry for NanoDB (single-command local build)
 REM =====================================================================
 REM NanoDB Build Script for Windows (MSVC)
 REM =====================================================================

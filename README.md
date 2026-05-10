@@ -1,145 +1,80 @@
 # NanoDB - Graduate Database Systems Project
 
-A custom-built database engine from scratch implementing all core database internals without STL containers.
+NanoDB is a mini relational database engine implemented from scratch as a graduate-level systems project. The implementation avoids STL container types and provides custom data structures and algorithms for core database functionality.
 
-## Project Features
+## Project Overview
 
-- **Custom Buffer Pool (Pager)**: Fixed-size memory management with LRU eviction using doubly-linked lists
-- **Polymorphic Type System**: Supports Int, Float, String types with operator overloading
-- **Query Parser**: Infix to Postfix conversion using Shunting Yard algorithm
-- **Balanced Indexing**: AVL Tree implementation for O(log N) lookups
-- **Query Optimization**: Graph-based optimizer with Minimal Spanning Tree for multi-table joins
-- **System Catalog**: Hash Map with collision chaining for O(1) metadata lookups
-- **Detailed Logging**: Comprehensive execution logs for all internal operations
-- **No STL**: All data structures built from scratch without std::vector, std::map, etc.
+This project implements the core components of a database engine:
 
-## Architecture
+- A fixed-size Buffer Pool (Pager) with LRU eviction and binary page serialization to disk.
+- A Polymorphic Type System (`Value`/`Field`) supporting `Int`, `Float`, and `String` values with clone semantics.
+- A Query Parser that tokenizes SQL-like WHERE expressions and converts infix expressions to postfix using the Shunting Yard algorithm.
+- A Postfix Expression Evaluator that computes boolean and arithmetic expressions using custom `Stack` and `Field` types.
+- A Balanced AVL Tree index for O(log N) searches and a custom Hash Map for O(1) metadata lookups.
+- A Graph-based query optimizer that chooses join order using a Minimum Spanning Tree (MST) approach.
+- Custom Queue and PriorityQueue implementations for scheduling and concurrency control.
 
-```
-include/
-├── pager.h              # Buffer pool management
-├── type.h               # Polymorphic type system
-├── row_table.h          # Row and Table schemas
-├── query_parser.h       # Expression parser
-├── expr_evaluator.h     # Postfix expression evaluation
-├── stack.h              # Generic stack implementation
-├── queue.h              # Generic queue and priority queue
-├── dlinked_list.h       # Doubly-linked list
-├── avl_tree.h           # Self-balancing binary search tree
-├── hash_map.h           # Hash map with chaining
-├── graph.h              # Graph for query optimization
-└── logger.h             # Execution logging
+## Architecture (high level)
 
-src/
-├── main.cpp             # Basic smoke test
-├── test_runner.cpp      # Query execution engine (no STL)
-├── pager.cpp            # Pager implementation
-└── type.cpp             # Type system implementation
-```
+- `include/` — headers for each subsystem (`pager.h`, `type.h`, `row_table.h`, `query_parser.h`, `expr_evaluator.h`, `stack.h`, `queue.h`, `dlinked_list.h`, `avl_tree.h`, `hash_map.h`, `graph.h`, `logger.h`).
+- `src/` — implementation files (`test_runner.cpp`, `pager.cpp`, `type.cpp`, `main.cpp`).
 
-## Build Instructions
+## Dataset & Scale
 
-### Windows (MSVC)
-```bash
-mkdir build
-cd build
-cmake .. -G "Visual Studio 16 2019"
-cmake --build . --config Release
-```
+Uses a 100,000-row subset of the TPC-H benchmark distributed across three tables:
 
-### Linux / macOS / WSL
-```bash
-mkdir build
-cd build
-cmake ..
-cmake --build .
+- `customer.tbl` (~20,000 rows)
+- `orders.tbl` (~30,000 rows)
+- `lineitem.tbl` (~50,000 rows)
+
+## Demo Test Cases (A–G)
+
+1. Parser & Evaluator — complex WHERE clause parsing and evaluation.
+2. Index Optimizer — sequential scan versus AVL index timing comparison.
+3. Join Optimizer — MST-based join ordering for multi-table joins.
+4. Memory Stress Test — 50-page buffer pool with LRU eviction metrics.
+5. Priority Queue Concurrency — admin-query preemption over background queries.
+6. Deep Expression Tree — evaluate deeply nested arithmetic/logical expressions.
+7. Durability & Persistence — insert, flush, restart, and validate recovery.
+
+## Compile and Execute the Test Runner
+
+Use one of the following build paths from the workspace root `C:\workspace`.
+
+### Option 1: MinGW / g++ (tested)
+
+PowerShell:
+```powershell
+cd C:\workspace
+.\build_gnu.bat
+.\bin\nanodb.exe
 ```
 
-## Running Tests
+### Option 2: MSVC
 
-```bash
-# Run with default queries.txt
-./nanodb
-
-# Run with custom query file
-./nanodb ../queries.txt
+Developer Command Prompt for Visual Studio:
+```cmd
+cd C:\workspace
+build.bat
+bin\nanodb.exe
 ```
 
-## Output
+### Output Files
 
-The test runner generates:
-- **Console output**: Real-time query execution results
-- **nanodb_execution.log**: Detailed execution log with timestamps including:
-  - Page evictions and LRU cache operations
-  - Infix to Postfix conversions
-  - Sequential vs index scan timings
-  - Join optimization paths
-  - Cache statistics
+- `bin\nanodb.exe` — compiled Test Runner executable.
+- `nanodb_execution.log` — detailed execution log generated by the Test Runner.
 
-## Dataset
+### Quick Verification
 
-Uses TPC-H Benchmark Dataset (100,000 records):
-- **customer.tbl**: ~20,000 customer records
-- **orders.tbl**: ~30,000 order records  
-- **lineitem.tbl**: ~50,000 line item records
+After running the executable, confirm the workload was processed:
 
-## Demo Test Cases
+```powershell
+Select-String -Path .\nanodb_execution.log -Pattern "Processed 50 queries from queries.txt"
+```
 
-The system supports 7 comprehensive test cases:
-1. **Parser & Evaluator**: Complex WHERE clause evaluation
-2. **Index Optimizer**: Sequential vs Balanced Tree search comparison
-3. **Join Optimizer**: Multi-table join via MST calculation
-4. **Memory Stress**: Simulated cache eviction under constraints
-5. **Priority Queue**: Admin query precedence over background queries
-6. **Expression Trees**: Deep nesting and operator precedence
-7. **Durability**: Data persistence across restarts
+## Important Constraints
 
-## Performance Characteristics
-
-- **Buffer Pool**: O(1) page access via hash table + doubly-linked list LRU
-- **Index Search**: O(log N) via AVL tree auto-balancing
-- **Hash Map Lookups**: O(1) average case with chaining collision resolution
-- **Query Optimization**: O(E log V) via Kruskal's MST algorithm
-
-## Key Implementation Details
-
-### No STL Containers Used
-- Custom `Stack<T>` template
-- Custom `Queue<T>` and `PriorityQueue<T>` templates
-- Custom `DoublyLinkedList<T>` template
-- Custom `AVLTree<K,V>` template
-- Custom `HashMap<K,V>` template
-
-### Memory Management
-- Manual pointer arithmetic for buffer pool
-- Proper cleanup of all dynamically allocated memory
-- Binary serialization/deserialization to disk
-
-### Query Processing
-1. Tokenization with type detection
-2. Operator precedence handling
-3. Infix-to-Postfix conversion (Shunting Yard)
-4. Postfix evaluation with polymorphic operands
-5. Result filtering and aggregation
-
-## Compilation Flags
-
-- C++17 standard required
-- No exceptions from data structures (optional behavior)
-- Memory safety via RAII and proper cleanup
-- Verified with compiler warnings enabled
-
-## Future Enhancements
-
-- Transaction support with ACID properties
-- More sophisticated query optimization (cost-based)
-- Compression for on-disk pages
-- Concurrency control with locking
-- Query plan caching
+- No use of STL container types or standard algorithms for the core data structures (this is strictly enforced by grading).
+- Proper memory management — dynamically allocated memory must be freed to avoid leak penalties.
 
 ---
-
-**Course**: CS-4002 Applied Programming (MS-CS)  
-**Deadline**: May 10, 2026  
-**Institution**: FAST-NUCES Islamabad
-

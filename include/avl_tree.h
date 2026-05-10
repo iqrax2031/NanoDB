@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB AVL Tree
+// Self-balancing binary search tree used for O(log N) indexed lookups.
 
 namespace nanodb {
 

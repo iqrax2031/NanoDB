@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Logger
+// Lightweight append-only execution logger for demo tracing and verification.
 
 #include <fstream>
 #include <ctime>

@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Doubly Linked List
+// Bidirectional list used by cache and queue-like subsystems needing O(1) splice/remove.
 
 namespace nanodb {
 

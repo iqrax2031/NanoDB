@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Type System
+// Polymorphic scalar values and owning Field wrapper for heterogeneous row data.
 
 #include <string>
 
@@ -39,8 +41,26 @@ struct StringValue : public Value {
 struct Field {
     Value* val;
     Field(): val(nullptr) {}
-    Field(const Field &o): val(o.val?o.val->clone():nullptr) {}
-    Field& operator=(const Field &o) { if (this!=&o) { delete val; val = o.val?o.val->clone():nullptr; } return *this; }
+    // Deep-copy ownership: every Field owns an independent Value clone.
+    Field(const Field &o): val(o.val ? o.val->clone() : nullptr) {}
+    Field(Field&& o) noexcept : val(o.val) { o.val = nullptr; }
+    Field& operator=(const Field &o) {
+        if (this != &o) {
+            // Clone first to preserve strong exception safety for self state.
+            Value* new_val = o.val ? o.val->clone() : nullptr;
+            delete val;
+            val = new_val;
+        }
+        return *this;
+    }
+    Field& operator=(Field&& o) noexcept {
+        if (this != &o) {
+            delete val;
+            val = o.val;
+            o.val = nullptr;
+        }
+        return *this;
+    }
     Field(Value* v): val(v) {}
     ~Field() { delete val; }
 

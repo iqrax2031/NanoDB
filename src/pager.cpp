@@ -1,8 +1,13 @@
+// NanoDB Pager Implementation
+// Implements page fetch, mapping, LRU movement, eviction, and disk I/O routines.
 #include "../include/pager.h"
 #include <cstring>
 #include <fstream>
 #include <sstream>
 #include <sys/stat.h>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 #include <iostream>
 
 static bool dir_exists(const std::string &p) {

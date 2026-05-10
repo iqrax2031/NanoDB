@@ -1,3 +1,4 @@
+# CMakeLists.txt: CMake build definition for NanoDB executables and include paths.
 cmake_minimum_required(VERSION 3.10)
 project(NanoDB)
 

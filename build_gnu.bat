@@ -1,4 +1,5 @@
 @echo off
+REM build_gnu.bat: Windows MinGW/Clang fallback build entry for NanoDB
 REM =====================================================================
 REM NanoDB Build Script (MinGW/GCC/Clang) for Windows - Fallback
 REM =====================================================================
@@ -40,14 +41,11 @@ echo Compiling src/pager.cpp...
 echo Compiling src/type.cpp...
 %CXX% %CXXFLAGS% -c src/type.cpp -o build\obj\type.o || (echo Failed; exit /b 1)
 
-echo Compiling src/main.cpp...
-%CXX% %CXXFLAGS% -c src/main.cpp -o build\obj\main.o || (echo Failed; exit /b 1)
-
 echo Compiling src/test_runner.cpp...
 %CXX% %CXXFLAGS% -c src/test_runner.cpp -o build\obj\test_runner.o || (echo Failed; exit /b 1)
 
 echo Linking...
-%CXX% build\obj\pager.o build\obj\type.o build\obj\main.o build\obj\test_runner.o -o bin\nanodb.exe || (echo Link failed; exit /b 1)
+%CXX% build\obj\pager.o build\obj\type.o build\obj\test_runner.o -o bin\nanodb.exe || (echo Link failed; exit /b 1)
 
 echo Build complete. Executable: bin\nanodb.exe
 exit /b 0

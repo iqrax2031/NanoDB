@@ -1,4 +1,6 @@
 #pragma once
+// NanoDB Queue Primitives
+// Custom FIFO queue and heap-based priority queue used by execution scheduling.
 
 namespace nanodb {
 
@@ -121,10 +123,11 @@ private:
     
 public:
     PriorityQueue(Comparator cmp = nullptr, int capacity = DEFAULT_CAPACITY) 
-        : size_(0), capacity_(capacity), cmp_(cmp) {
+        : size_(0), capacity_(capacity > 0 ? capacity : DEFAULT_CAPACITY), cmp_(cmp) {
         data_ = new T[capacity_];
         if (!cmp_) {
-            cmp_ = [](const T& a, const T& b) { return a > b; }; // default max-heap
+            // Keep deterministic fallback semantics when no comparator is provided.
+            cmp_ = [](const T&, const T&) { return false; };
         }
     }
     
@@ -165,6 +168,13 @@ public:
     
 private:
     void resize(int new_capacity) {
+        // Never shrink on push-triggered growth; keep amortized O(1) insertion behavior.
+        if (new_capacity <= capacity_) {
+            new_capacity = capacity_ > 0 ? capacity_ * 2 : DEFAULT_CAPACITY;
+        }
+        if (new_capacity <= 0) {
+            new_capacity = DEFAULT_CAPACITY;
+        }
         T* new_data = new T[new_capacity];
         for (int i = 0; i < size_; ++i) {
             new_data[i] = data_[i];
