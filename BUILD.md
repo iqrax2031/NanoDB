@@ -7,6 +7,11 @@
 build.bat
 ```
 
+### Windows (MinGW/MSYS2 fallback)
+```batch
+build_gnu.bat
+```
+
 ### Linux/macOS/WSL (GCC/Clang)
 ```bash
 bash build.sh
@@ -61,6 +66,15 @@ cd c:\workspace
 build.bat
 ```
 - Automatically finds MSVC compiler
+- Compiles all sources
+- Links executable to `bin\nanodb.exe`
+
+#### Windows (MinGW/MSYS2 fallback)
+```batch
+cd c:\workspace
+build_gnu.bat
+```
+- Automatically finds `g++` or `clang++`
 - Compiles all sources
 - Links executable to `bin\nanodb.exe`
 
