@@ -14,7 +14,7 @@ echo.
 REM Check for Visual Studio
 where cl.exe >nul 2>&1
 if %ERRORLEVEL% neq 0 (
-    echo Error: MSVC compiler (cl.exe) not found in PATH
+    echo Error: MSVC compiler ^(cl.exe^) not found in PATH
     echo Please install Visual Studio or run from Developer Command Prompt
     pause
     exit /b 1
